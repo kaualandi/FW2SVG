@@ -1,5 +1,6 @@
 const $inputForm = document.querySelector('#input-form');
 const $input = document.querySelector('#input');
+const $closeAfterCopy = document.querySelector('#close-after-copy');
 const $output = document.querySelector('#output');
 const $preview = document.querySelector('#preview');
 const $iconState = document.querySelector('#icon-state');
@@ -47,13 +48,17 @@ function copyToClipboard(text) {
         $iconState.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
     }).finally(() => {
         $iconState.classList.add('zoom-in');
-        setTimeout(() => {
-            $iconState.classList.remove('zoom-in');
+        if ($closeAfterCopy.value === 'true') {
+                window.close();
+        } else {
             setTimeout(() => {
-                $iconState.classList.add('zoom-out');
-                $iconState.innerHTML = '<i class="fa-solid fa-copy"></i>';
-            }, 2000);
-        }, 1000);
+                $iconState.classList.remove('zoom-in');
+                setTimeout(() => {
+                    $iconState.classList.add('zoom-out');
+                    $iconState.innerHTML = '<i class="fa-solid fa-copy"></i>';
+                }, 2000);
+            }, 1000);
+        }
     });
 }
 
@@ -113,6 +118,7 @@ function getIconByURL() {
     const icon = url.searchParams.get('icon');
     if (icon) {
         $input.value = icon;
+        $closeAfterCopy.value = true;
         $inputForm.querySelector('button[type="submit"]').click();
     }
 
